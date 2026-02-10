@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud X // iPhone Link</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        overflow: hidden;
+      }
+      .cx-iphone-root {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .cx-iphone-card {
+        max-width: 960px;
+        width: 100%;
+        border-radius: 24px;
+        padding: 28px 28px 22px;
+        background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.85));
+        border: 1px solid rgba(96, 165, 250, 0.65);
+        box-shadow: 0 0 40px rgba(56, 189, 248, 0.7);
+        display: grid;
+        grid-template-columns: 1.2fr 1.1fr;
+        gap: 28px;
+        position: relative;
+        overflow: hidden;
+      }
+      .cx-iphone-card::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        border: 1px solid transparent;
+        background: linear-gradient(120deg, #22d3ee, #a855f7, #22c55e, #22d3ee) border-box;
+        -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.55;
+        animation: rgb-border 8s linear infinite;
+        pointer-events: none;
+      }
+      .cx-iphone-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+      }
+      .cx-iphone-kicker {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.9);
+      }
+      .cx-iphone-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 26px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+      .cx-iphone-title span {
+        color: #22d3ee;
+      }
+      .cx-iphone-text {
+        font-size: 14px;
+        color: rgba(226, 232, 240, 0.9);
+      }
+      .cx-iphone-text-strong {
+        color: #a855f7;
+      }
+      .cx-iphone-countdown {
+        margin-top: 8px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 20px;
+        color: #22c55e;
+      }
+      .cx-iphone-sub {
+        font-size: 11px;
+        color: rgba(148, 163, 184, 0.95);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .cx-iphone-actions {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .cx-iphone-btn {
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        border: 1px solid rgba(148, 163, 184, 0.8);
+        background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.9));
+        color: #e5f2ff;
+        text-decoration: none;
+      }
+      .cx-iphone-btn-primary {
+        border-color: transparent;
+        background: linear-gradient(120deg, #22c55e, #22d3ee, #a855f7);
+        color: #020617;
+      }
+      .cx-iphone-device-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cx-iphone {
+        width: 260px;
+        height: 520px;
+        border-radius: 48px;
+        padding: 14px;
+        background: radial-gradient(circle at 0 0, #22d3ee, #0f172a 50%, #020617 100%);
+        box-shadow: 0 0 50px rgba(8, 47, 73, 0.9);
+        position: relative;
+      }
+      .cx-iphone-inner {
+        position: absolute;
+        inset: 14px;
+        border-radius: 40px;
+        background: radial-gradient(circle at top, #020617, #020617 50%, #111827 100%);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cx-iphone-notch {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 130px;
+        height: 26px;
+        background: #020617;
+        border-radius: 999px;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.7);
+      }
+      .cx-iphone-screen {
+        padding: 70px 18px 18px;
+        text-align: center;
+        color: #e5f2ff;
+      }
+      .cx-iphone-screen-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 16px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .cx-iphone-screen-text {
+        font-size: 13px;
+        color: rgba(226, 232, 240, 0.9);
+      }
+      .cx-iphone-screen-badge {
+        margin-top: 18px;
+        display: inline-flex;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(34, 197, 94, 0.9);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #bbf7d0;
+      }
+      @media (max-width: 860px) {
+        .cx-iphone-card {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+        .cx-iphone-device-wrapper {
+          order: -1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="noise-overlay"></div>
+    <main class="cx-iphone-root">
+      <section class="cx-iphone-card">
+        <div class="cx-iphone-info">
+          <div class="cx-iphone-kicker">LINK CLOUD X → IPHONE</div>
+          <h1 class="cx-iphone-title">ESTAMOS QUASE <span>LÁ</span></h1>
+          <p class="cx-iphone-text">
+            O desbloqueio principal do <span class="cx-iphone-text-strong">Cloud X</span> foi concluído com sucesso.
+            Agora o sistema está sincronizando com o seu iPhone para finalizar o processo.
+          </p>
+          <div class="cx-iphone-countdown">falta apenas 1h</div>
+          <div class="cx-iphone-sub">AGUARDE ENQUANTO A VINCULAÇÃO É APLICADA</div>
+          <div class="cx-iphone-actions">
+            <a href="index.html" class="cx-iphone-btn cx-iphone-btn-primary">voltar ao painel</a>
+            <span class="cx-iphone-btn" style="pointer-events: none;">iphone em pré-configuração</span>
+          </div>
+        </div>
+        <div class="cx-iphone-device-wrapper">
+          <div class="cx-iphone">
+            <div class="cx-iphone-inner">
+              <div class="cx-iphone-notch"></div>
+              <div class="cx-iphone-screen">
+                <div class="cx-iphone-screen-title">Cloud X • iPhone</div>
+                <div class="cx-iphone-screen-text">
+                  Estamos quase lá.<br />
+                  Seu dispositivo está recebendo as últimas chaves de acesso.
+                </div>
+                <div class="cx-iphone-screen-badge">falta apenas 1h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+

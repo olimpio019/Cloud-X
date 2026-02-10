@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud X // Selecionar Dispositivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        overflow: hidden;
+      }
+      .cx-devices-root {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .cx-devices-card {
+        width: 100%;
+        max-width: 1000px;
+        border-radius: 24px;
+        padding: 24px 26px 22px;
+        background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.86));
+        border: 1px solid rgba(96, 165, 250, 0.7);
+        box-shadow: 0 0 40px rgba(56, 189, 248, 0.75);
+        position: relative;
+        overflow: hidden;
+      }
+      .cx-devices-card::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        border: 1px solid transparent;
+        background: linear-gradient(120deg, #22d3ee, #a855f7, #22c55e, #22d3ee) border-box;
+        -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.55;
+        animation: rgb-border 8s linear infinite;
+        pointer-events: none;
+      }
+      .cx-devices-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .cx-devices-kicker {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.9);
+      }
+      .cx-devices-title {
+        margin: 4px 0 0;
+        font-family: "Orbitron", sans-serif;
+        font-size: 22px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+      .cx-devices-title span {
+        color: #22d3ee;
+      }
+      .cx-devices-sub {
+        font-size: 12px;
+        color: rgba(226, 232, 240, 0.9);
+        max-width: 420px;
+      }
+      .cx-devices-grid {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .cx-device {
+        position: relative;
+        border-radius: 18px;
+        padding: 14px 12px 12px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+        cursor: pointer;
+        transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+        overflow: hidden;
+      }
+      .cx-device::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 0 0, rgba(34, 211, 238, 0.2), transparent 55%);
+        opacity: 0;
+        transition: opacity 0.12s ease;
+        pointer-events: none;
+      }
+      .cx-device:hover {
+        transform: translateY(-4px);
+        border-color: rgba(56, 189, 248, 0.9);
+        box-shadow: 0 0 24px rgba(56, 189, 248, 0.8);
+      }
+      .cx-device:hover::before {
+        opacity: 1;
+      }
+      .cx-device-name {
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        color: #e5f2ff;
+      }
+      .cx-device-tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: rgba(148, 163, 184, 0.95);
+        margin-bottom: 10px;
+      }
+      .cx-device-phone {
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        border-radius: 18px;
+        padding: 6px;
+        background: radial-gradient(circle at 0 0, #22d3ee, #0f172a 55%, #020617 100%);
+        box-shadow: 0 0 28px rgba(8, 47, 73, 0.9);
+        position: relative;
+      }
+      .cx-device-phone-inner {
+        position: absolute;
+        inset: 6px;
+        border-radius: 14px;
+        background: radial-gradient(circle at top, #020617, #0b1120 55%, #020617 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        color: #e5f2ff;
+        font-size: 11px;
+        text-align: center;
+        padding: 12px 10px 26px;
+        overflow: hidden;
+      }
+      .cx-device-phone-inner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        /* leve camada escura para suavizar o branco do fundo da foto */
+        background: radial-gradient(
+          circle at top,
+          rgba(15, 23, 42, 0.7),
+          rgba(15, 23, 42, 0.4) 40%,
+          transparent 80%
+        );
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .cx-device-notch {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 10px;
+        background: #020617;
+        border-radius: 999px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+        z-index: 3;
+      }
+      .cx-device-chip {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.9);
+        font-size: 9px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.9);
+        z-index: 3;
+      }
+      .cx-device-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        /* deixa mais integrado e reduz “chapado branco” */
+        filter: brightness(1.08) contrast(1.08) saturate(1.1);
+      }
+      .cx-device-phone-inner > div {
+        position: relative;
+        z-index: 3;
+      }
+      .cx-device-apple .cx-device-phone {
+        background: radial-gradient(circle at 0 0, #22d3ee, #0f172a 55%, #020617 100%);
+      }
+      .cx-device-samsung .cx-device-phone {
+        background: radial-gradient(circle at 0 0, #22c55e, #0f172a 55%, #020617 100%);
+      }
+      .cx-device-xiaomi .cx-device-phone {
+        background: radial-gradient(circle at 0 0, #f97316, #0f172a 55%, #020617 100%);
+      }
+      .cx-device-google .cx-device-phone {
+        background: radial-gradient(circle at 0 0, #a855f7, #0f172a 55%, #020617 100%);
+      }
+      .cx-devices-footer {
+        margin-top: 14px;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.9);
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      @media (max-width: 880px) {
+        .cx-devices-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 640px) {
+        .cx-devices-root {
+          padding: 12px;
+        }
+        .cx-devices-card {
+          padding: 18px;
+        }
+        .cx-devices-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .cx-devices-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="noise-overlay"></div>
+    <main class="cx-devices-root">
+      <section class="cx-devices-card">
+        <header class="cx-devices-header">
+          <div>
+            <div class="cx-devices-kicker">CLOUD X // SELECIONAR DISPOSITIVO</div>
+            <h1 class="cx-devices-title">ESCOLHA O MODELO <span>ALVO</span></h1>
+          </div>
+          <p class="cx-devices-sub">
+            Antes de iniciar o desbloqueio, selecione qual dispositivo será vinculado ao
+            <strong>Cloud X</strong>. Em seguida você será levado para o painel principal de desbloqueio.
+          </p>
+        </header>
+
+        <div class="cx-devices-grid">
+          <div class="cx-device cx-device-apple" data-device="iphone">
+            <div class="cx-device-name">iPhone</div>
+            <div class="cx-device-tag">Apple • iOS</div>
+            <div class="cx-device-phone">
+              <div class="cx-device-phone-inner">
+                <div class="cx-device-notch"></div>
+                <img src="https://www.apple.com/newsroom/images/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/article/Apple-iPhone-17-Pro-cosmic-orange-250909_inline.jpg.large_2x.jpg" alt="iPhone" class="cx-device-img" />
+                <div class="cx-device-chip">selecionar</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cx-device cx-device-samsung" data-device="samsung">
+            <div class="cx-device-name">Galaxy</div>
+            <div class="cx-device-tag">Samsung • Android</div>
+            <div class="cx-device-phone">
+              <div class="cx-device-phone-inner">
+                <div class="cx-device-notch"></div>
+                <img src="https://images.samsung.com/ca/smartphones/galaxy-s25/compare/images/upgrade-design-massive-screen-galaxy-z-fold6-start-tb.jpg" alt="Samsung Galaxy" class="cx-device-img" />
+                
+                <div class="cx-device-chip">selecionar</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cx-device cx-device-xiaomi" data-device="xiaomi">
+            <div class="cx-device-name">Xiaomi</div>
+            <div class="cx-device-tag">Xiaomi • MIUI</div>
+            <div class="cx-device-phone">
+              <div class="cx-device-phone-inner">
+                <div class="cx-device-notch"></div>
+                <img src="https://vulcanpost.com/wp-content/uploads/2019/09/MiMixAlphaFeature.jpg" alt="Xiaomi" class="cx-device-img" />
+               
+                <div class="cx-device-chip">selecionar</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cx-device cx-device-google" data-device="google">
+            <div class="cx-device-name">Pixel</div>
+            <div class="cx-device-tag">Google • Android</div>
+            <div class="cx-device-phone">
+              <div class="cx-device-phone-inner">
+                <div class="cx-device-notch"></div>
+                <img src="https://www.techreviewer.de/wp-content/uploads/2025/07/google-pixel-10-pro-official-render.jpg" alt="Google Pixel" class="cx-device-img" />
+               
+                <div class="cx-device-chip">selecionar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="cx-devices-footer">
+          <span>© 2049 CLOUD X // SELETOR DE DISPOSITIVO</span>
+          <span>CLIQUE EM UM MODELO PARA CONTINUAR</span>
+        </footer>
+      </section>
+    </main>
+
+    <script>
+      // Quando o usuário escolhe um modelo, salvamos a seleção
+      // e vamos para o painel principal (index.html).
+      document.querySelectorAll(".cx-device").forEach((card) => {
+        card.addEventListener("click", () => {
+          const device = card.getAttribute("data-device");
+          try {
+            localStorage.setItem("cloudx-device", device);
+          } catch (_) {}
+          window.location.href = "index.html";
+        });
+      });
+    </script>
+  </body>
+</html>
+

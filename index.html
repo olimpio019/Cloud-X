@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud X // Unlock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="noise-overlay"></div>
+    <main class="cx-root">
+      <div class="cx-frame">
+        <header class="cx-header">
+          <div class="cx-logo">
+            <span class="cx-logo-mark">X</span>
+            <span class="cx-logo-text">CLOUD<span>_X</span></span>
+          </div>
+          <div class="cx-header-right">
+            <span class="cx-chip cx-chip-online">ONLINE</span>
+            <span class="cx-chip cx-chip-secure">QUANTUM-SECURE</span>
+          </div>
+        </header>
+
+        <section class="cx-core">
+          <div class="cx-left">
+            <div class="cx-lock-orbit">
+              <div class="cx-orbit cx-orbit-1"></div>
+              <div class="cx-orbit cx-orbit-2"></div>
+              <div class="cx-orbit cx-orbit-3"></div>
+              <div class="cx-lock-core">
+                <div class="cx-lock-icon">
+                  <span class="cx-lock-symbol">🔒</span>
+                </div>
+                <div class="cx-lock-ring cx-lock-ring-rgb"></div>
+              </div>
+            </div>
+            <div class="cx-status">
+              <span class="cx-status-label">STATUS</span>
+              <span class="cx-status-value" id="statusText">AGUARDANDO AUTENTICAÇÃO</span>
+            </div>
+            <div class="cx-metrics">
+              <div class="cx-metric">
+                <span class="cx-metric-label">NÓS ATIVOS</span>
+                <span class="cx-metric-value" id="nodesValue">0</span>
+              </div>
+              <div class="cx-metric">
+                <span class="cx-metric-label">LATÊNCIA</span>
+                <span class="cx-metric-value" id="latencyValue">0 ms</span>
+              </div>
+              <div class="cx-metric">
+                <span class="cx-metric-label">CIFRAS</span>
+                <span class="cx-metric-value" id="cipherValue">AES-X // CH4-9</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cx-right">
+            <div class="cx-panel">
+              <h1 class="cx-title">UNLOCK CLOUD<span>X</span></h1>
+              <p class="cx-subtitle">
+                Insira sua <span class="cx-highlight">CHAVE MESTRA</span> para iniciar o protocolo de desbloqueio.
+              </p>
+
+              <form class="cx-form" id="unlockForm">
+                <label class="cx-field">
+                  <span class="cx-field-label">Numero DE IMEI</span>
+                  <input
+                    type="text"
+                    id="operatorId"
+                    autocomplete="off"
+                    placeholder="ex: IMEI-000000000000000"
+                    required
+                  />
+                </label>
+
+                <label class="cx-field">
+                  <span class="cx-field-label">CHAVE MESTRA</span>
+                  <div class="cx-password-wrapper">
+                    <input
+                      type="password"
+                      id="masterKey"
+                      autocomplete="off"
+                      placeholder="••••••••••••••••••••"
+                      required
+                    />
+                    <button type="button" class="cx-eye" id="toggleKey" aria-label="Mostrar chave"></button>
+                  </div>
+                </label>
+
+                <div class="cx-progress" id="progressBar">
+                  <div class="cx-progress-inner"></div>
+                </div>
+
+                <button type="submit" class="cx-btn cx-btn-primary" id="unlockBtn">
+                  <span class="cx-btn-glow"></span>
+                  <span class="cx-btn-text" data-default="INICIAR DESBLOQUEIO" data-working="PROCESSANDO..." data-success="CLOUD X DESBLOQUEADO">
+                    INICIAR DESBLOQUEIO
+                  </span>
+                </button>
+
+                <p class="cx-hint">
+                  DICA: A chave mestra foi criada no processo de cadastro<span class="cx-highlight">  no nosso sistema</span>.
+                </p>
+              </form>
+            </div>
+
+            <div class="cx-console">
+              <div class="cx-console-header">
+                <span>CONSOLE DE TELEMETRIA</span>
+                <span class="cx-dot cx-dot-rgb"></span>
+              </div>
+              <div class="cx-console-body" id="consoleLog">
+                <!-- linhas de log são injetadas via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="cx-footer">
+          <span>© 2049 CLOUD X // SIMULADOR DE UNLOCK</span>
+          <span>BUILD: NX-9.4.2 // UI RGB GAMER</span>
+        </footer>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
