@@ -61,6 +61,42 @@
                 Insira sua <span class="cx-highlight">CHAVE MESTRA</span> para iniciar o protocolo de desbloqueio.
               </p>
 
+              <div class="cx-auth" id="authSection">
+                <div class="cx-auth-tabs">
+                  <button type="button" class="cx-auth-tab is-active" id="authTabLogin">LOGIN</button>
+                  <button type="button" class="cx-auth-tab" id="authTabRegister">CADASTRO</button>
+                </div>
+
+                <form class="cx-auth-form" id="loginForm">
+                  <label class="cx-field">
+                    <span class="cx-field-label">E-MAIL</span>
+                    <input type="email" id="loginEmail" autocomplete="username" placeholder="seu@email.com" required />
+                  </label>
+                  <label class="cx-field">
+                    <span class="cx-field-label">CHAVE MESTRA</span>
+                    <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Sua chave mestra" required />
+                  </label>
+                  <button type="submit" class="cx-btn cx-btn-auth">ENTRAR</button>
+                </form>
+
+                <form class="cx-auth-form is-hidden" id="registerForm">
+                  <label class="cx-field">
+                    <span class="cx-field-label">E-MAIL</span>
+                    <input type="email" id="registerEmail" autocomplete="email" placeholder="seu@email.com" required />
+                  </label>
+                  <label class="cx-field">
+                    <span class="cx-field-label">CHAVE MESTRA</span>
+                    <input type="password" id="registerPassword" autocomplete="new-password" placeholder="Min. 6 caracteres" required />
+                  </label>
+                  <button type="submit" class="cx-btn cx-btn-auth">CRIAR CONTA</button>
+                </form>
+
+                <div class="cx-auth-session is-hidden" id="sessionInfo">
+                  <span>Conectado como <strong id="sessionEmail"></strong></span>
+                  <button type="button" class="cx-btn cx-btn-ghost" id="logoutBtn">SAIR</button>
+                </div>
+              </div>
+
               <form class="cx-form" id="unlockForm">
                 <label class="cx-field">
                   <span class="cx-field-label">Numero DE IMEI</span>

@@ -1,18 +1,38 @@
-# Cloud X – Simulador de Desbloqueio RGB
+# Cloud X - Unlock com Auth Backend (Vercel)
 
-Interface em estilo gamer/futurista que simula o desbloqueio de um sistema chamado **Cloud X**, com animações RGB e console de telemetria.
+Projeto frontend estatico com backend serverless para cadastro e login.
 
-## Como usar
+## Endpoints criados
 
-1. Abra a pasta do projeto:
-   - `C:\Users\Lanza 10\Desktop\ds`
-2. Clique duas vezes em `index.html` ou abra o arquivo no navegador (Chrome/Edge).
-3. Informe um **ID de Operador** (qualquer texto) e uma **Chave Mestra** (qualquer texto) e clique em **INICIAR DESBLOQUEIO**.
-4. Observe a animação de progresso, os logs no console e o status mudando até `CLOUD X DESBLOQUEADO`.
+- `POST /api/auth/register` cria usuario e abre sessao
+- `POST /api/auth/login` autentica e abre sessao
+- `POST /api/auth/logout` encerra sessao
+- `GET /api/auth/me` retorna usuario autenticado
+- `POST /api/auth/verify-master-key` valida a chave mestra do usuario logado
+
+## Como funciona
+
+- Sessao via cookie HTTP-only (`cloudx_session`)
+- Senha/chave mestra com hash `scrypt` + salt
+- Persistencia:
+  - Em producao (Vercel): Vercel KV (obrigatorio)
+  - Sem KV local: fallback em memoria (somente desenvolvimento)
+
+## Configuracao na Vercel
+
+1. Crie um banco **Vercel KV** no projeto.
+2. Em `Settings > Environment Variables`, garanta:
+   - `KV_REST_API_URL`
+   - `KV_REST_API_TOKEN`
+3. Redeploy do projeto.
+
+Sem essas variaveis em producao, o backend retorna erro de configuracao.
 
 ## Estrutura
 
-- `index.html` – marcação da tela de unlock.
-- `style.css` – tema RGB futurista/game.
-- `script.js` – lógica da simulação, logs e animações.
-
+- `index.html` UI
+- `style.css` estilos
+- `script.js` fluxo frontend + chamadas da API
+- `api/_lib/auth.js` utilitarios auth/cookies
+- `api/_lib/store.js` persistencia (KV/memoria)
+- `api/auth/*.js` rotas serverless

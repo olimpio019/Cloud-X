@@ -10,6 +10,19 @@ const statusText = document.getElementById("statusText");
 const nodesValue = document.getElementById("nodesValue");
 const latencyValue = document.getElementById("latencyValue");
 const cipherValue = document.getElementById("cipherValue");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const authTabLogin = document.getElementById("authTabLogin");
+const authTabRegister = document.getElementById("authTabRegister");
+const loginEmailInput = document.getElementById("loginEmail");
+const loginPasswordInput = document.getElementById("loginPassword");
+const registerEmailInput = document.getElementById("registerEmail");
+const registerPasswordInput = document.getElementById("registerPassword");
+const sessionInfo = document.getElementById("sessionInfo");
+const sessionEmail = document.getElementById("sessionEmail");
+const logoutBtn = document.getElementById("logoutBtn");
+
+let currentUser = null;
 
 // cria wrapper interno para scroll do console
 const consoleInner = document.createElement("div");
@@ -48,13 +61,47 @@ function pushLog(message, type = "info") {
   consoleInner.scrollTop = consoleInner.scrollHeight;
 }
 
+async function apiRequest(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: "include",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch (_err) {
+    payload = null;
+  }
+
+  if (!response.ok) {
+    const message = payload?.error || "Falha na comunicacao com o servidor.";
+    throw new Error(message);
+  }
+
+  return payload;
+}
+
+function setAuthMode(mode) {
+  const isLogin = mode === "login";
+  authTabLogin.classList.toggle("is-active", isLogin);
+  authTabRegister.classList.toggle("is-active", !isLogin);
+  loginForm.classList.toggle("is-hidden", !isLogin);
+  registerForm.classList.toggle("is-hidden", isLogin);
+}
+
 function setButtonState(state) {
+  const isAuthenticated = Boolean(currentUser);
   const defaultLabel = btnText.dataset.default;
   const workingLabel = btnText.dataset.working;
   const successLabel = btnText.dataset.success;
 
   if (state === "idle") {
-    unlockBtn.disabled = false;
+    unlockBtn.disabled = !isAuthenticated;
     btnText.textContent = defaultLabel;
   } else if (state === "working") {
     unlockBtn.disabled = true;
@@ -63,8 +110,32 @@ function setButtonState(state) {
     unlockBtn.disabled = true;
     btnText.textContent = successLabel;
   } else if (state === "error") {
-    unlockBtn.disabled = false;
+    unlockBtn.disabled = !isAuthenticated;
     btnText.textContent = defaultLabel;
+  }
+}
+
+function updateAuthUI() {
+  const authenticated = Boolean(currentUser);
+  unlockBtn.disabled = !authenticated;
+  masterKeyInput.disabled = !authenticated;
+  operatorIdInput.disabled = !authenticated;
+
+  if (authenticated) {
+    sessionInfo.classList.remove("is-hidden");
+    sessionEmail.textContent = currentUser.email;
+    loginForm.classList.add("is-hidden");
+    registerForm.classList.add("is-hidden");
+    authTabLogin.classList.add("is-hidden");
+    authTabRegister.classList.add("is-hidden");
+    statusText.textContent = "AUTENTICADO. PRONTO PARA DESBLOQUEIO";
+  } else {
+    sessionInfo.classList.add("is-hidden");
+    authTabLogin.classList.remove("is-hidden");
+    authTabRegister.classList.remove("is-hidden");
+    setAuthMode("login");
+    statusText.textContent = "AGUARDANDO AUTENTICACAO";
+    setButtonState("idle");
   }
 }
 
@@ -99,11 +170,11 @@ function simulateUnlock(operatorId, masterKey) {
   setButtonState("working");
   statusText.textContent = "INICIANDO PROTOCOLO DE DESBLOQUEIO";
   pushLog(`OPERADOR @${operatorId} conectado ao cluster CLOUD X.`);
-  pushLog("Carregando módulos de segurança...", "tag");
+  pushLog("Carregando modulos de seguranca...", "tag");
 
   const sequence = [
     () => {
-      pushLog("Handshake quântico estabelecido com nó primário.");
+      pushLog("Handshake quantico estabelecido com no primario.");
       statusText.textContent = "VALIDANDO ASSINATURA DIGITAL";
     },
     () => {
@@ -112,23 +183,23 @@ function simulateUnlock(operatorId, masterKey) {
       statusText.textContent = "VERIFICANDO INTEGRIDADE DO CANAL";
     },
     () => {
-      pushLog("Derivando chaves de sessão multi-nível...");
-      pushLog("Aplicando blindagem de ruído em camadas RGB.");
-      statusText.textContent = "DERIVANDO CHAVES DE SESSÃO";
+      pushLog("Derivando chaves de sessao multi-nivel...");
+      pushLog("Aplicando blindagem de ruido em camadas RGB.");
+      statusText.textContent = "DERIVANDO CHAVES DE SESSAO";
     },
     () => {
-      pushLog("Sincronizando relógios atômicos distribuídos...");
-      pushLog("NÓS ONLINE confirmados. Latência dentro do limite.");
+      pushLog("Sincronizando relogios atomicos distribuidos...");
+      pushLog("NOS ONLINE confirmados. Latencia dentro do limite.");
       statusText.textContent = "SINCRONIZANDO CLUSTER CLOUD X";
     },
     () => {
       pushLog("Desbloqueando matrizes de dados protegidas...", "tag");
-      pushLog("Criando túnel seguro entre painéis de controle.");
+      pushLog("Criando tunel seguro entre paineis de controle.");
       statusText.textContent = "DESBLOQUEANDO CLOUD X";
     },
     () => {
-      pushLog("Todos os checkpoints concluídos.");
-      pushLog("CLOUD X pronto para comandos avançados.", "success");
+      pushLog("Todos os checkpoints concluidos.");
+      pushLog("CLOUD X pronto para comandos avancados.", "success");
       statusText.textContent = "CLOUD X DESBLOQUEADO";
       setButtonState("success");
     },
@@ -139,8 +210,6 @@ function simulateUnlock(operatorId, masterKey) {
     if (progress > 100) progress = 100;
     progressBar.style.width = `${progress}%`;
 
-    // garante que todos os passos da sequência sejam executados,
-    // mesmo quando a barra "pula" direto para 100%
     const stepThreshold = (step + 1) * (100 / sequence.length);
     if (progress >= stepThreshold && step < sequence.length) {
       sequence[step]();
@@ -149,7 +218,6 @@ function simulateUnlock(operatorId, masterKey) {
 
     if (progress >= 100 && step >= sequence.length) {
       clearInterval(timer);
-      // após concluir o desbloqueio, redireciona para a tela do iPhone
       setTimeout(() => {
         window.location.href = "iphone.html";
       }, 900);
@@ -166,22 +234,126 @@ function fakeHash(input) {
   return `0x${out}::${input.length.toString(16).padStart(2, "0")}`;
 }
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (!currentUser) {
+    pushLog("Usuario nao autenticado. Faca login para continuar.", "error");
+    statusText.textContent = "LOGIN OBRIGATORIO";
+    setButtonState("error");
+    return;
+  }
 
   const operatorId = operatorIdInput.value.trim() || "N3ON-OPS";
   const masterKey = masterKeyInput.value.trim();
 
   if (!masterKey) {
     pushLog("Chave mestra vazia. Acesso bloqueado.", "error");
-    statusText.textContent = "CHAVE INVÁLIDA";
+    statusText.textContent = "CHAVE INVALIDA";
+    setButtonState("error");
+    return;
+  }
+
+  try {
+    const verify = await apiRequest("/api/auth/verify-master-key", {
+      method: "POST",
+      body: JSON.stringify({ password: masterKey }),
+    });
+
+    if (!verify.valid) {
+      pushLog("Chave mestra invalida para este usuario.", "error");
+      statusText.textContent = "CHAVE INVALIDA";
+      setButtonState("error");
+      return;
+    }
+  } catch (err) {
+    pushLog(err.message, "error");
+    statusText.textContent = "FALHA DE VALIDACAO";
     setButtonState("error");
     return;
   }
 
   progressBar.style.width = "0%";
   consoleInner.innerHTML = "";
-
   simulateUnlock(operatorId, masterKey);
 });
 
+authTabLogin.addEventListener("click", () => setAuthMode("login"));
+authTabRegister.addEventListener("click", () => setAuthMode("register"));
+
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = registerEmailInput.value.trim().toLowerCase();
+  const password = registerPasswordInput.value.trim();
+
+  if (!email || !password) {
+    pushLog("Preencha e-mail e chave mestra para cadastro.", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    pushLog("A chave mestra deve ter pelo menos 6 caracteres.", "error");
+    return;
+  }
+
+  try {
+    const payload = await apiRequest("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    currentUser = payload.user;
+    pushLog(`Cadastro concluido para ${payload.user.email}.`, "success");
+    registerForm.reset();
+    updateAuthUI();
+  } catch (err) {
+    pushLog(err.message, "error");
+  }
+});
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = loginEmailInput.value.trim().toLowerCase();
+  const password = loginPasswordInput.value.trim();
+
+  try {
+    const payload = await apiRequest("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    currentUser = payload.user;
+    pushLog(`Login autorizado para ${payload.user.email}.`, "success");
+    loginForm.reset();
+    updateAuthUI();
+  } catch (err) {
+    pushLog(err.message, "error");
+    statusText.textContent = "FALHA NA AUTENTICACAO";
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await apiRequest("/api/auth/logout", { method: "POST", body: "{}" });
+  } catch (_err) {
+    // Mantem fluxo de logout no cliente mesmo se endpoint falhar.
+  }
+  currentUser = null;
+  pushLog("Sessao encerrada.", "tag");
+  updateAuthUI();
+});
+
+async function bootstrapSession() {
+  statusText.textContent = "VERIFICANDO SESSAO";
+  setButtonState("idle");
+  try {
+    const payload = await apiRequest("/api/auth/me", { method: "GET" });
+    currentUser = payload.user || null;
+    if (currentUser) {
+      pushLog(`Sessao ativa para ${currentUser.email}.`, "tag");
+    }
+  } catch (_err) {
+    currentUser = null;
+  }
+  updateAuthUI();
+}
+
+bootstrapSession();

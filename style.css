@@ -374,6 +374,70 @@ body {
   gap: 10px;
 }
 
+.cx-auth {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.78));
+}
+
+.cx-auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cx-auth-tab {
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.95);
+  color: #e2e8f0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+}
+
+.cx-auth-tab.is-active {
+  border-color: rgba(34, 211, 238, 0.9);
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+  color: #22d3ee;
+}
+
+.cx-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cx-auth-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: rgba(226, 232, 240, 0.95);
+}
+
+.cx-btn-auth {
+  margin-top: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+}
+
+.cx-btn-ghost {
+  border: 1px solid rgba(34, 211, 238, 0.8);
+  background: transparent;
+  color: #22d3ee;
+  letter-spacing: 0.12em;
+  padding: 7px 10px;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
 .cx-field {
   display: flex;
   flex-direction: column;
