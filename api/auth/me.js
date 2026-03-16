@@ -23,6 +23,7 @@ module.exports = async function handler(req, res) {
 
     return sendJson(res, 200, { ok: true, user: { email: user.email } });
   } catch (err) {
+    console.error("session lookup failed", err);
     return sendJson(res, 500, { error: err.message || "Erro interno ao validar sessao." });
   }
 };

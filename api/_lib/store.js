@@ -27,12 +27,41 @@ async function kvRequest(command, parts = [], query = "") {
     headers: { Authorization: `Bearer ${cfg.token}` },
   });
 
-  if (!response.ok) {
-    throw new Error("Falha ao acessar o armazenamento KV.");
+  let data = null;
+  let rawBody = "";
+
+  try {
+    rawBody = await response.text();
+    data = rawBody ? JSON.parse(rawBody) : null;
+  } catch (_err) {
+    data = null;
   }
 
-  const data = await response.json();
+  if (!response.ok) {
+    const details =
+      data?.error ||
+      data?.message ||
+      rawBody ||
+      `status ${response.status}`;
+    throw new Error(`Falha ao acessar o armazenamento KV: ${details}`);
+  }
+
+  if (!data || typeof data !== "object" || !("result" in data)) {
+    throw new Error("Resposta invalida do armazenamento KV.");
+  }
+
   return data.result;
+}
+
+function parseStoredJson(result, entityName) {
+  if (!result) return null;
+  if (typeof result === "object") return result;
+
+  try {
+    return JSON.parse(result);
+  } catch (_err) {
+    throw new Error(`Registro ${entityName} invalido no armazenamento.`);
+  }
 }
 
 function userKey(email) {
@@ -50,8 +79,7 @@ async function getUser(email) {
   }
 
   const result = await kvRequest("get", [userKey(email)]);
-  if (!result) return null;
-  return JSON.parse(result);
+  return parseStoredJson(result, "de usuario");
 }
 
 async function putUser(email, user) {

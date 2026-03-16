@@ -37,6 +37,7 @@ module.exports = async function handler(req, res) {
     const valid = verifyPassword(password, user.passwordSalt, user.passwordHash);
     return sendJson(res, 200, { ok: true, valid });
   } catch (err) {
+    console.error("master key verification failed", err);
     return sendJson(res, 500, { error: err.message || "Erro interno na verificacao.", valid: false });
   }
 };

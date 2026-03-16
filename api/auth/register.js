@@ -47,6 +47,7 @@ module.exports = async function handler(req, res) {
 
     return sendJson(res, 201, { ok: true, user: { email } });
   } catch (err) {
+    console.error("register failed", err);
     return sendJson(res, 500, { error: err.message || "Erro interno no cadastro." });
   }
 };

@@ -34,6 +34,7 @@ module.exports = async function handler(req, res) {
 
     return sendJson(res, 200, { ok: true, user: { email } });
   } catch (err) {
+    console.error("login failed", err);
     return sendJson(res, 500, { error: err.message || "Erro interno no login." });
   }
 };
