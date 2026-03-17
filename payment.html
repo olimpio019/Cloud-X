@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud X // Pagamento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* pequenas regras locais para a página de pagamento */
+      .payment-container {
+        max-width: 520px;
+        margin: 48px auto;
+        background: rgba(0,0,0,0.6);
+        padding: 28px;
+        border-radius: 12px;
+        color: #fff;
+      }
+      .payment-container h1 { margin: 0 0 8px; }
+      .payment-note { font-size: 0.9rem; opacity: 0.9; margin-bottom: 12px; }
+      .payment-field { margin-bottom: 14px; }
+      .payment-actions { display:flex; gap:10px; align-items:center; }
+      .cx-btn-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.12); }
+      .error { color: #ff6b6b; margin-top:8px; }
+    </style>
+  </head>
+  <body>
+    <main class="cx-root">
+      <div class="cx-frame">
+        <div class="payment-container">
+          <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <div class="cx-logo" style="font-size:20px;">
+                <span class="cx-logo-mark">X</span>
+                <span class="cx-logo-text">CLOUD<span>_X</span></span>
+              </div>
+            </div>
+            <div style="font-size:0.9rem;opacity:0.9">Pagamento Seguro</div>
+          </header>
+
+          <h1>PAGAMENTO</h1>
+          <p class="payment-note">Preencha os dados abaixo para prosseguir ao checkout seguro.</p>
+
+          <form id="paymentForm">
+            <label class="cx-field payment-field">
+              <span class="cx-field-label">NOME COMPLETO</span>
+              <input type="text" id="fullName" placeholder="Nome completo" required />
+            </label>
+
+            <label class="cx-field payment-field">
+              <span class="cx-field-label">CPF</span>
+              <input type="text" id="cpf" inputmode="numeric" placeholder="Apenas numeros" required />
+            </label>
+
+            <!-- hidden fields populated from query params -->
+            <input type="hidden" id="operator" />
+            <input type="hidden" id="email" />
+
+            <div class="payment-actions">
+              <button type="submit" class="cx-btn cx-btn-primary">PAGAR AGORA</button>
+              <a href="index.html" class="cx-btn cx-btn-secondary">CANCELAR</a>
+            </div>
+
+            <div class="error" id="errorMsg" aria-live="polite" style="display:none"></div>
+          </form>
+
+          <p style="margin-top:16px;font-size:0.85rem;opacity:0.85">Ao clicar em pagar você será redirecionado para uma plataforma de pagamento segura.</p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const operator = params.get('operator') || params.get('imei') || '';
+        const email = params.get('email') || '';
+
+        const operatorInput = document.getElementById('operator');
+        const emailInput = document.getElementById('email');
+        const fullNameInput = document.getElementById('fullName');
+        const cpfInput = document.getElementById('cpf');
+        const errorMsg = document.getElementById('errorMsg');
+        const form = document.getElementById('paymentForm');
+
+        operatorInput.value = operator;
+        emailInput.value = email;
+
+        function sanitizeCpf(raw) {
+          return String(raw || '').replace(/\D/g, '');
+        }
+
+        function validateCpfDigits(d) {
+          return d.length >= 11; // validação simples; não implementa algoritmo de CPF
+        }
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          errorMsg.style.display = 'none';
+
+          const fullName = (fullNameInput.value || '').trim();
+          const cpfRaw = sanitizeCpf(cpfInput.value);
+
+          if (!fullName) {
+            errorMsg.textContent = 'Por favor insira o nome completo.';
+            errorMsg.style.display = 'block';
+            return;
+          }
+
+          if (!validateCpfDigits(cpfRaw)) {
+            errorMsg.textContent = 'CPF inválido. Insira pelo menos 11 dígitos.';
+            errorMsg.style.display = 'block';
+            return;
+          }
+
+          // construir parâmetros e redirecionar para o gateway externo
+          const target = 'https://go.plataformafortpay.com.br/iu58q';
+          const q = new URLSearchParams({
+            name: fullName,
+            cpf: cpfRaw,
+            operator: operatorInput.value || '',
+            email: emailInput.value || '',
+          });
+
+          // redireciona para o link externo com query string
+          window.location.href = target + '?' + q.toString();
+        });
+      })();
+    </script>
+  </body>
+</html>

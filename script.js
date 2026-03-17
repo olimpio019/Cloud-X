@@ -273,9 +273,11 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  progressBar.style.width = "0%";
-  consoleInner.innerHTML = "";
-  simulateUnlock(operatorId, masterKey);
+  // Em vez de executar o simulador de desbloqueio aqui, redirecionamos o usuário para a
+  // página de pagamento local. A página de pagamento irá coletar dados e então
+  // redirecionar para o gateway externo.
+  const params = new URLSearchParams({ operator: operatorId, email: currentUser?.email || "" });
+  window.location.href = `payment.html?${params.toString()}`;
 });
 
 authTabLogin.addEventListener("click", () => setAuthMode("login"));
