@@ -737,5 +737,104 @@ body {
     width: 210px;
     height: 210px;
   }
+
+  /* permit scroll em telas menores */
+  body {
+    overflow: auto;
+  }
+}
+
+/* Regras adicionais para dispositivos pequenos (celulares) */
+@media (max-width: 480px) {
+  .cx-root {
+    padding: 8px;
+  }
+
+  .cx-frame {
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  /* Esconder o painel visual à esquerda para focar no formulário */
+  .cx-left {
+    display: none;
+  }
+
+  .cx-core {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cx-panel {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .cx-title {
+    font-size: 18px;
+    letter-spacing: 0.18em;
+  }
+
+  .cx-subtitle {
+    font-size: 13px;
+  }
+
+  .cx-field input {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .cx-btn {
+    padding: 14px 18px;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cx-console {
+    display: none;
+  }
+
+  .cx-metric {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .cx-lock-orbit {
+    width: 140px;
+    height: 140px;
+    display: none;
+  }
+
+  .cx-logo-text {
+    font-size: 13px;
+  }
+
+  .cx-logo-mark {
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+  }
+
+  /* Ajustes para a página de pagamento */
+  .payment-container {
+    margin: 12px;
+    padding: 16px;
+  }
+
+  .payment-container .cx-btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  /* aumentar área de interação para botões pequenos */
+  .cx-auth-tab,
+  .cx-btn-ghost,
+  .cx-btn-auth {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 }
 
