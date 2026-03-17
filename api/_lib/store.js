@@ -4,14 +4,25 @@ const memory = {
 };
 
 function kvConfig() {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
+  // Primary env names
+  let url = process.env.KV_REST_API_URL;
+  let token = process.env.KV_REST_API_TOKEN;
+
+  // Try common alternative env var names (helps if variables were set with different names)
+  url = url || process.env.KV_URL || process.env.KV_API_URL || process.env.NEXT_PUBLIC_KV_REST_API_URL;
+  token = token || process.env.KV_TOKEN || process.env.KV_API_TOKEN;
+
   if (!url || !token) {
+    // Do not throw in production — prefer a clear warning and in-memory fallback so the app remains usable.
+    const msg = "KV nao configurado. Variaveis esperadas: KV_REST_API_URL + KV_REST_API_TOKEN. Usando fallback em memoria.";
     if (process.env.VERCEL === "1") {
-      throw new Error("KV nao configurado. Defina KV_REST_API_URL e KV_REST_API_TOKEN.");
+      console.warn(msg);
+    } else {
+      console.log(msg);
     }
     return null;
   }
+
   return { url: url.replace(/\/+$/, ""), token };
 }
 
